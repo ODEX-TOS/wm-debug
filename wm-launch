@@ -10,6 +10,8 @@ LOG_DEBUG="[DEBUG] "
 AWESOME_DISPLAY=":1"
 RESOLUTION="800x600"
 
+ROOT_PATH="/usr/bin"
+
 function log {
     echo "$@"
 }
@@ -27,7 +29,7 @@ function is-installed {
 
 function help {
     name="wm-launch"
-    echo -e "$name [-hrdSR] -s -c"
+    echo -e "$name [-hrdSRsc] -di"
     echo -e "\nPOSITIONAL ARGUMENTS:"
     echo -e "$name -h | --help\t\t\t\tPrint this help message."
     echo -e "$name -r | --resolution <XxY>\t\t\tSet the resolution of the awesome window in Xaxis x Yaxis eg 1920x1080 (default 800x600"
@@ -37,6 +39,9 @@ function help {
     echo -e "$name -S | --sample \t\t\t\tSample the process using Oprofile"
     echo -e "$name -R | --report \t\t\t\tGet the report of the Oprofile tool"
     echo -e "$name -c | --cleanup \t\t\t\tRemove the generated files and directories"
+    echo -e "\nSETUP COMMANDS:"
+    echo -e "$name -i | --init \t\t\t\tMake a symbolic like to your PATH. Making this script accessible from everywhere"
+    echo -e "$name -di | --deinit \t\t\t\tRemove the symbolic link that has been created"
 }
 
 function abort {
@@ -59,6 +64,25 @@ function set-variables {
         if [[ "$1" == "-R" || "$1" == "--report" ]]; then
                 opreport -cl --demangle=smart `which awesome`
                 exit 0
+        fi
+        if [[ "$1" == "-i" || "$1" == "--init" ]]; then
+                log "$LOG_WARN" "Generating a symbolic link to the system path. Don't move this script otherwise you need to call $0 -di"
+                if [[ "$0" == "$ROOT_PATH/wm-launch" ]]; then
+                    log "$LOG_ERROR" "Cannot make a symbolic link to itself"
+                    exit 1
+                fi
+                sudo ln -s "$(realpath $0)" "$ROOT_PATH/wm-launch"
+                exit 0
+        fi
+        if [[ "$1" == "-di" || "$1" == "--deinit" ]]; then
+                log "$LOG_WARN" "Removing the symbolic link to the executable"
+                if [[ -f "$ROOT_PATH/wm-launch" ]]; then
+                    sudo rm "$ROOT_PATH/wm-launch"
+                    exit 0
+                else
+                    log "$LOG_ERROR" "Cannot find the symbolic link. Are you sure you have made one?" 
+                    exit 1
+                fi
         fi
         if [[ "$1" == "-c" || "$1" == "--cleanup" ]]; then
                 if [[ -d "oprofile_data" ]]; then
