@@ -10,7 +10,7 @@ LOG_DEBUG="[DEBUG] "
 AWESOME_DISPLAY=":1"
 RESOLUTION="800x600"
 
-ROOT_PATH="/usr/bin"
+ROOT_PATH="${ROOT_PATH:-/usr/bin}"
 
 function log {
     echo "$@"
