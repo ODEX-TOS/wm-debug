@@ -38,7 +38,7 @@ function help {
     echo -e "$name -e | --exec command\t\t\tCommand to execute in the environment eg awesome"
     echo -e "$name -s | --stop \t\t\t\tStop all instances"
     echo -e "\nPROFILING COMMANDS:"
-    echo -e "$name -S | --sample \t\t\t\ample the process using Oprofile"
+    echo -e "$name -S | --sample \t\t\tSample the process using Oprofile"
     echo -e "$name -R | --report \t\t\tGet the report of the Oprofile tool"
     echo -e "$name -c | --cleanup \t\t\tRemove the generated files and directories"
     echo -e "\nSETUP COMMANDS:"
