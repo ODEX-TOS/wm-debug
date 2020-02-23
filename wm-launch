@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# This script is used to easily debug awesomewm changes.
+# It is very simular to the awtt script. but it also works for other init levels apart from init 7
+
+LOG_ERROR="[ERROR] "
+LOG_WARN="[WARN] "
+LOG_DEBUG="[DEBUG] "
+
+AWESOME_DISPLAY=":1"
+RESOLUTION="800x600"
+
+function log {
+    echo "$@"
+}
+
+function is-installed {
+    if [[ ! "$(command -v awesome)" ]]; then
+            log "$LOG_ERROR" "Awesome is not installed. Aborting..."
+            exit 1
+    fi
+    if [[ ! "$(command -v Xephyr)" ]]; then
+            log "$LOG_ERROR" "Xephyr is not installed. Aborting..."
+            exit 1
+    fi
+}
+
+function help {
+    name="wm-launch"
+    echo -e "$name [-hrdSR] -s -c"
+    echo -e "\nPOSITIONAL ARGUMENTS:"
+    echo -e "$name -h | --help\t\t\t\tPrint this help message."
+    echo -e "$name -r | --resolution <XxY>\t\t\tSet the resolution of the awesome window in Xaxis x Yaxis eg 1920x1080 (default 800x600"
+    echo -e "$name -d | --display <number>\t\t\tSet the display on witch to show the window (by default :1)"
+    echo -e "$name -s | --stop \t\t\t\tStop all instances"
+    echo -e "\nPROFILING COMMANDS:"
+    echo -e "$name -S | --sample \t\t\t\tSample the process using Oprofile"
+    echo -e "$name -R | --report \t\t\t\tGet the report of the Oprofile tool"
+    echo -e "$name -c | --cleanup \t\t\t\tRemove the generated files and directories"
+}
+
+function abort {
+        killall Xephyr
+}
+
+function set-variables {
+    while [ "$1" != "" ]; do
+        if [[ "$1" == "-r" || "$1" == "--resolution" ]]; then
+            RESOLUTION="$2"
+            shift
+        fi
+        if [[ "$1" == "-d" || "$1" == "--display" ]]; then
+            AWESOME_DISPLAY="$2"
+            shift
+        fi
+        if [[ "$1" == "-S" || "$1" == "--sample" ]]; then
+                SAMPLE="1"
+        fi
+        if [[ "$1" == "-R" || "$1" == "--report" ]]; then
+                opreport -cl --demangle=smart `which awesome`
+                exit 0
+        fi
+        if [[ "$1" == "-c" || "$1" == "--cleanup" ]]; then
+                if [[ -d "oprofile_data" ]]; then
+                        rm -rf oprofile_data
+                fi
+                if [[ -d "$HOME/oprofile_data" ]]; then
+                    rm -rf "$HOME/oprofile_data"
+                fi
+                exit 0
+        fi
+        if [[ "$1" == "-s" || "$1" == "--stop" ]]; then
+            abort
+            exit 0
+        fi
+        if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+                help
+                exit 0
+        fi
+        shift
+    done
+}
+
+function launch {
+    Xephyr -br -ac -noreset -screen "$RESOLUTION" "$AWESOME_DISPLAY"  &
+    sleep 1
+    if [[ "$SAMPLE" == "1" ]]; then
+        if [[ ! "$(command -v operf)" ]]; then
+            log "$LOG_ERROR" "operf is required to debug the window manager, operf is part of OProfile"
+            abort
+            exit 1
+        fi
+        log "$LOG_WARN" "Notifying kernel of profile sampling mode (requires elevated privileges)" 
+        sudo sysctl kernel.perf_event_paranoid=1
+        DISPLAY="$AWESOME_DISPLAY" operf awesome
+    else
+        DISPLAY="$AWESOME_DISPLAY" awesome
+    fi
+
+}
+
+is-installed
+
+set-variables $@
+launch
