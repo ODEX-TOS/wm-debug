@@ -34,7 +34,7 @@ function help {
     echo -e "\nPOSITIONAL ARGUMENTS:"
     echo -e "$name -h | --help\t\t\t\tPrint this help message."
     echo -e "$name -r | --resolution <XxY>\t\tSet the resolution of the awesome window in Xaxis x Yaxis eg 1920x1080 (default 800x600"
-    echo -e "$name -d | --display <number>\t\tSet the display on witch to show the window (by default :1)"
+    echo -e "$name -d | --display <number>\t\tSet the display on which to show the window (by default :1)"
     echo -e "$name -e | --exec command\t\t\tCommand to execute in the environment eg awesome"
     echo -e "$name -s | --stop \t\t\t\tStop all instances"
     echo -e "\nPROFILING COMMANDS:"
