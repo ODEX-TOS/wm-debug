@@ -14,7 +14,7 @@ This repo contains scripts that makes debugging window managers a bit more easy.
 <br />
 <p align="center">
   <a href="https://github.com/ODEX-TOS/tos-live">
-    <img src="https://tos.pbfp.xyz/images/logo.svg" alt="Logo" width="150" height="150">
+    <img src="https://tos.odex.be/images/logo.svg" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">WM-DEBUG</h3>
