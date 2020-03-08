@@ -111,6 +111,16 @@ function set-variables {
     done
 }
 
+# Check that all inputs are valid.
+# Currently checks to see if the command that should be executed exists
+# Otherwise abort
+function validate {
+    if [[ ! "$(command -v $EXEC)" ]]; then
+        log "$LOG_ERROR" "Command $EXEC is not installed."
+        exit 1
+    fi
+}
+
 function launch {
     Xephyr -br -ac -noreset -screen "$RESOLUTION" "$AWESOME_DISPLAY"  &
     sleep 1
@@ -121,15 +131,17 @@ function launch {
             exit 1
         fi
         log "$LOG_WARN" "Notifying kernel of profile sampling mode (requires elevated privileges)" 
+        log "$LOG_WARN" "Executing $EXEC"
         sudo sysctl kernel.perf_event_paranoid=1
         DISPLAY="$AWESOME_DISPLAY" operf "$EXEC"
     else
+        log "$LOG_WARN" "Executing $EXEC"
         DISPLAY="$AWESOME_DISPLAY" "$EXEC"
     fi
-
 }
 
 is-installed
 
 set-variables $@
+validate
 launch
