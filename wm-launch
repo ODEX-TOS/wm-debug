@@ -115,8 +115,11 @@ function set-variables {
 # Currently checks to see if the command that should be executed exists
 # Otherwise abort
 function validate {
-    if [[ ! "$(command -v $EXEC)" ]]; then
-        log "$LOG_ERROR" "Command $EXEC is not installed."
+    # EXEC can be a command together with specific options
+    # This line retreives the command (the first parameter)
+    COMMAND="$(echo "$EXEC" | cut -d" " -f1 )"
+    if [[ ! "$(command -v $COMMAND)" ]]; then
+        log "$LOG_ERROR" "Command $COMMAND is not installed."
         exit 1
     fi
 }
@@ -133,15 +136,17 @@ function launch {
         log "$LOG_WARN" "Notifying kernel of profile sampling mode (requires elevated privileges)" 
         log "$LOG_WARN" "Executing $EXEC"
         sudo sysctl kernel.perf_event_paranoid=1
-        DISPLAY="$AWESOME_DISPLAY" operf "$EXEC"
+        # Not quoted because the variable can hold the options as well
+        DISPLAY="$AWESOME_DISPLAY" operf $EXEC
     else
         log "$LOG_WARN" "Executing $EXEC"
-        DISPLAY="$AWESOME_DISPLAY" "$EXEC"
+        # Not quoted because the variable can hold the options as well
+        DISPLAY="$AWESOME_DISPLAY" $EXEC
     fi
 }
 
 is-installed
 
-set-variables $@
+set-variables "$@"
 validate
 launch
