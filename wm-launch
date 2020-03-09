@@ -88,7 +88,8 @@ function set-variables {
                 PARENT_COMMAND="gdb"
         fi
         if [[ "$1" == "-R" || "$1" == "--report" ]]; then
-                opreport -cl --demangle=smart `which awesome`
+                COMMAND="$(echo "$EXEC" | cut -d" " -f1 )"
+                opreport -cl --demangle=smart `which $COMMAND`
                 exit 0
         fi
         if [[ "$1" == "-i" || "$1" == "--init" ]]; then
@@ -134,7 +135,6 @@ function set-variables {
 function checkOperf {
     if [[ ! "$(command -v operf)" ]]; then
         log "$LOG_ERROR" "operf is required to profile the window manager, operf is part of OProfile"
-        abort
         exit 1
     fi
 }
@@ -142,14 +142,11 @@ function checkOperf {
 function checkGDB {
     if [[ ! "$(command -v gdb)" ]]; then
         log "$LOG_ERROR" "gdb is required to debug the window manager, Install gdb for this to work"
-        abort
         exit 1
     fi
 }
 
 function launch {
-    Xephyr -br -ac -noreset -screen "$RESOLUTION" "$AWESOME_DISPLAY"  &
-    sleep 1
     if [[ "$PARENT_COMMAND" == "operf" ]]; then
         checkOperf
         log "$LOG_WARN" "Notifying kernel of profile sampling mode (requires elevated privileges)" 
@@ -161,9 +158,12 @@ function launch {
     else
         log "$LOG_WARN" "Executing $EXEC"
     fi
+
+    Xephyr -br -ac -noreset -screen "$RESOLUTION" "$AWESOME_DISPLAY"  &
+    sleep 1
     
     # Not quoted because the variable can hold the options as well
-    DISPLAY="$AWESOME_DISPLAY" "$PARENT_COMMAND" $EXEC
+    DISPLAY="$AWESOME_DISPLAY" $PARENT_COMMAND $EXEC
 
 }
 
