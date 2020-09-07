@@ -10,7 +10,7 @@ LOG_DEBUG="\033[0;35m[DEBUG]\033[0m "
 AWESOME_DISPLAY=":1"
 RESOLUTION="${RES:-800x600}"
 
-EXEC="${EXEC:-env XDG_CURRENT_DESKTOP=TDE awesome}"
+EXEC="${EXEC:-env XDG_CURRENT_DESKTOP=TDE TDE_ENV=develop awesome}"
 ROOT_PATH="${ROOT_PATH:-/usr/bin}"
 
 # by default we don't need to call a parent command
