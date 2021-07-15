@@ -186,7 +186,7 @@ function launch {
     sleep 1
     
     # Not quoted because the variable can hold the options as well
-    DISPLAY="$AWESOME_DISPLAY" $PARENT_COMMAND $EXEC
+    TDE_STAG="1" DISPLAY="$AWESOME_DISPLAY" $PARENT_COMMAND $EXEC
 
 }
 
