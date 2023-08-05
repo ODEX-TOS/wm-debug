@@ -51,6 +51,11 @@ pacman -S awesome
 pacman -S awesome-tos
 ```
 
+give the script perm to execute 
+```bash
+chmod +x wm-launch
+```
+
 ## Usage example
 
 Here is a short and easy list of commands you can use with this script.
@@ -58,9 +63,9 @@ Here is a short and easy list of commands you can use with this script.
 Help menu
 
 ```bash
-./launch.sh -h
+./wm-launch -h
 # or
-./launch.sh --help
+./wm-launch --help
 ```
 
 Set the screen resolution of the window
