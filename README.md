@@ -44,10 +44,16 @@ To install them use the following
 
 ```bash
 # Install on arch
-pacman -Syu xorg-server-xephyr
-pacman -Syu awesome
+pacman -Syu # update packages
+pacman -S xorg-server-xephyr
+pacman -S awesome
 # or if you are on tos (or have the tos repo's)
-pacman -Syu awesome-tos
+pacman -S awesome-tos
+```
+
+give the script perm to execute 
+```bash
+chmod +x wm-launch
 ```
 
 ## Usage example
@@ -57,26 +63,26 @@ Here is a short and easy list of commands you can use with this script.
 Help menu
 
 ```bash
-./launch.sh -h
+./wm-launch -h
 # or
-./launch.sh --help
+./wm-launch --help
 ```
 
 Set the screen resolution of the window
 
 ```bash
-./launch -r 1920x1080
-./launch --resolution 1920x1080
+./wm-launch -r 1920x1080
+./wm-launch --resolution 1920x1080
 ```
 
 Set the display to use
 
 ```
-./launch.sh -d :1
-./launch.sh --display :1
+./wm-launch -d :1
+./wm-launch --display :1
 # or another display
-./launch.sh -d :2
-./launch.sh --display :2
+./wm-launch -d :2
+./wm-launch --display :2
 ```
 
 > only use the display setting if your script isn't being launched
